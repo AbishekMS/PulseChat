@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import img from '../assets/login.svg';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/logo.png';
-import "./Login.css";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebaseConfig';
+import { useUser } from './UserContext';
 import SignInwithGoogle from './SigninwithGoogle';
+import img from '../assets/login.svg';
+import logo from '../assets/logo.png';
+import './Login.css';
 
 const Login = () => {
   const [password, setPassword] = useState('');
@@ -14,8 +15,8 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [error, setError] = useState("");
-
-  const nav = useNavigate();
+  const navigate = useNavigate();
+  const { setUser } = useUser();
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -26,8 +27,10 @@ const Login = () => {
     if (isSigningIn) return;
     setIsSigningIn(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      nav('/home');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      setUser({ email: user.email, name: user.displayName || "" });
+      navigate('/home');
     } catch (error) {
       setError(error.message);
       setIsSigningIn(false);
