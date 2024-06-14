@@ -4,11 +4,12 @@ import Contact from './components/Contact'
 import Login from './authentications/Login'
 import Register from './authentications/Register'
 import ForgetPassword from './authentications/ForgetPassword'
+import { UserProvider } from './authentications/UserContext'
 function App() {
   
   return (
  
-   <>
+   <UserProvider>
    <Router>
    
    <Routes>
@@ -19,7 +20,8 @@ function App() {
    <Route path='/forgot-password' element={<ForgetPassword/>}/>
    </Routes>
   
-   </Router></>
+   </Router>
+   </UserProvider>
    
   )
 }
